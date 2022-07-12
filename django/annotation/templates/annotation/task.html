@@ -1,0 +1,113 @@
+<section class="section" id="task">
+    <div id="task-metadata">
+        <input name="row_instance_id" type="hidden" value="{{ row_instance.id }}" />
+    </div>
+    <div class="tile is-ancestor">
+        <div class="tile is-parent is-4 is-vertical">
+            <div class="tile is-child box">
+                <h1 class="title">Données de départ</h1>
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Champs</th>
+                            <th>Valeur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in row_instance.task_data.items %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tile is-child box">
+                <p class="heading">Dataset</p>
+                <p class="title">{{ dataset_str }}</p>
+            </div>
+            <div class="tile is-child box">
+                <p class="heading">Avancement</p>
+                <p class="title">{{ progress_str }}</p>
+            </div>
+        </div>
+        <div class="tile is-parent is-vertical">
+            <div class="tile is-child box">
+                <h1 class="title">Formulaire de recherche</h1>
+                <form id="search_data">
+                    <div class="field">
+                        <div class="control">
+                            <label class="label" for="nom">Nom:</label>
+                            <input class="input" type="search" id="nom" name="nom" placeholder="..." hx-post="/search"
+                                hx-target="#search-results" hx-include="#search_data" hx-indicator="#spinner"
+                                hx-trigger="keyup changed delay:500ms, search" value="{{ row_instance.data.nom }}" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label class="label" for="siret">SIRET:</label>
+                            <input class="input" type="search" id="siret" name="siret" placeholder="..."
+                                hx-post="/search" hx-target="#search-results" hx-include="#search_data"
+                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label class="label" for="code_postal">Code postal:</label>
+                            <input class="input" type="search" id="code_postal" name="code_postal" placeholder="..."
+                                hx-post="/search" hx-target="#search-results" hx-include="#search_data"
+                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search"
+                                value="{{ row_instance.data.code_postal }}" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tile is-child box content">
+                <h1 class="title">Résultats <span id="spinner" class="htmx-indicator">
+                        <i class="fas fa-spinner fa-pulse"></i>
+                    </span></h1>
+
+                <table class="table is-hoverable is-fullwidth is-striped">
+                    <thead>
+                        <tr>
+                            <th>SIRET</th>
+                            <th>Siège ?</th>
+                            <th>Raison sociale</th>
+                            <th>Adresse</th>
+                            <th>Ville</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="search-results">
+
+                        {% for establishment_instance in establishment_queryset %}
+                        <tr>
+                            <td>{{ establishment_instance.siret }}</td>
+                            <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
+                            <td>{{ establishment_instance.name }}</td>
+                            <td>{{ establishment_instance.address1 }}</td>
+                            <td>{{ establishment_instance.city }}</td>
+                            <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                                    hx-swap="outerHTML"
+                                    hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>Choisir
+                                    ✅</button></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                                    hx-swap="outerHTML" hx-vals='{"skipped": true}'>Passer au suivant ❌</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
