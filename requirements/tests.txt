@@ -1,4 +1,4 @@
--r base.txt
+-r prod.txt
 
 factory_boy==3.2.1
 pytest==7.1.1
