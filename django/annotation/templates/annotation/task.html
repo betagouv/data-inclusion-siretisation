@@ -41,7 +41,7 @@
                             <label class="label" for="nom">Nom:</label>
                             <input class="input" type="search" id="nom" name="nom" placeholder="..." hx-post="/search"
                                 hx-target="#search-results" hx-include="#search_data" hx-indicator="#spinner"
-                                hx-trigger="keyup changed delay:500ms, search" value="{{ row_instance.data.nom }}" />
+                                hx-trigger="keyup changed delay:500ms, search" value="{{ row_instance.data.nom|default_if_none:'' }}" />
                         </div>
                     </div>
                     <div class="field">
@@ -58,7 +58,7 @@
                             <input class="input" type="search" id="code_postal" name="code_postal" placeholder="..."
                                 hx-post="/search" hx-target="#search-results" hx-include="#search_data"
                                 hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search"
-                                value="{{ row_instance.data.code_postal }}" />
+                                value="{{ row_instance.data.code_postal|default_if_none:'' }}" />
                         </div>
                     </div>
                 </form>

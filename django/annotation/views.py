@@ -33,12 +33,31 @@ def task(request):
         "dataset_str": "cd35_annuaire_social",
         "progress_str": f"{progress_current} / {progress_total}",
         "row_instance": row_instance,
-        "establishment_queryset": Establishment.objects.filter(
-            postal_code__startswith=row_instance.data["code_postal"],
-        )
-        .annotate(similarity=TrigramSimilarity("full_search_text", row_instance.data["nom"]))
-        .order_by("-similarity")[:10],
     }
+
+    postal_code_str = row_instance.task_data["code_postal"]
+    name = row_instance.task_data["nom"]
+
+    # prevent searches based on the name only, because trigram similarity can not be
+    # used on the whole sirene database
+    if not any([postal_code_str]):
+        context["establishment_queryset"] = Establishment.objects.none()
+        return render(request, "annotation/task.html", context)
+
+    establishment_qs = Establishment.objects
+
+    if postal_code_str:
+        establishment_qs = establishment_qs.filter(postal_code__startswith=postal_code_str)
+
+    if name:
+        establishment_qs = establishment_qs.annotate(
+            similarity=TrigramSimilarity("full_search_text", "Halte-garderie associative - Farandole - Acigné")
+        ).order_by("-similarity")
+
+    establishment_qs = establishment_qs.all()[:10]
+
+    context["establishment_queryset"] = establishment_qs
+
     return render(request, "annotation/task.html", context)
 
 
