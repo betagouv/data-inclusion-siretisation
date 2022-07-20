@@ -36,7 +36,7 @@ def task(request):
     }
 
     postal_code_str = row_instance.task_data["code_postal"]
-    name = row_instance.task_data["nom"]
+    name_str = row_instance.task_data["nom"]
 
     # prevent searches based on the name only, because trigram similarity can not be
     # used on the whole sirene database
@@ -49,9 +49,9 @@ def task(request):
     if postal_code_str:
         establishment_qs = establishment_qs.filter(postal_code__startswith=postal_code_str)
 
-    if name:
+    if name_str:
         establishment_qs = establishment_qs.annotate(
-            similarity=TrigramSimilarity("full_search_text", "Halte-garderie associative - Farandole - Acigné")
+            similarity=TrigramSimilarity("full_search_text", name_str)
         ).order_by("-similarity")
 
     establishment_qs = establishment_qs.all()[:10]
@@ -82,7 +82,7 @@ def search(request):
 
     if unsafe_name != "":
         establishment_qs = establishment_qs.annotate(
-            similarity=TrigramSimilarity("full_search_text", "Halte-garderie associative - Farandole - Acigné")
+            similarity=TrigramSimilarity("full_search_text", unsafe_name)
         ).order_by("-similarity")
 
     establishment_qs = establishment_qs.all()[:10]
