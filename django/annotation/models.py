@@ -35,9 +35,10 @@ class DatasetRow(BaseModel):
             "adresse": data["adresse"],
             "code_postal": data["code_postal"],
             "commune": data["commune"],
+            "courriel": data["courriel"],
             "lien source": data["lien_source"],
             "typologie": data["typologie"],
-            "description": data["presentation_resume"],
+            "description": data["presentation_detail"],
         }
 
     def __str__(self) -> str:

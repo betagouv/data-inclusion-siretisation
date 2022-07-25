@@ -5,6 +5,14 @@
     <div class="tile is-ancestor">
         <div class="tile is-parent is-4 is-vertical">
             <div class="tile is-child box">
+                <p class="heading">Dataset</p>
+                <p class="title">{{ dataset_str }}</p>
+            </div>
+            <div class="tile is-child box">
+                <p class="heading">Avancement</p>
+                <p class="title">{{ progress_str }}</p>
+            </div>
+            <div class="tile is-child box">
                 <h1 class="title">Données de départ</h1>
                 <table class="table is-fullwidth">
                     <thead>
@@ -17,19 +25,11 @@
                         {% for key, value in row_instance.task_data.items %}
                         <tr>
                             <td>{{ key }}</td>
-                            <td>{{ value }}</td>
+                            <td>{{ value|urlize }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
-            <div class="tile is-child box">
-                <p class="heading">Dataset</p>
-                <p class="title">{{ dataset_str }}</p>
-            </div>
-            <div class="tile is-child box">
-                <p class="heading">Avancement</p>
-                <p class="title">{{ progress_str }}</p>
             </div>
         </div>
         <div class="tile is-parent is-vertical">
@@ -41,7 +41,8 @@
                             <label class="label" for="nom">Nom:</label>
                             <input class="input" type="search" id="nom" name="nom" placeholder="..." hx-post="/search"
                                 hx-target="#search-results" hx-include="#search_data" hx-indicator="#spinner"
-                                hx-trigger="keyup changed delay:500ms, search" value="{{ row_instance.data.nom|default_if_none:'' }}" />
+                                hx-trigger="keyup changed delay:500ms, search"
+                                value="{{ row_instance.data.nom|default_if_none:'' }}" />
                         </div>
                     </div>
                     <div class="field">
