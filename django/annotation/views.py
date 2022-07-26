@@ -44,10 +44,10 @@ def task(request):
 
 
 def search(request):
-    unsafe_address = request.POST.get("adresse", "")
-    unsafe_name = request.POST.get("nom", "")
-    unsafe_postal_code = request.POST.get("code_postal", "")
-    unsafe_siret = request.POST.get("siret", "")
+    unsafe_address = request.POST.get("adresse", None)
+    unsafe_name = request.POST.get("nom", None)
+    unsafe_postal_code = request.POST.get("code_postal", None)
+    unsafe_siret = request.POST.get("siret", None)
 
     context = {
         "establishment_queryset": services.search_sirene(

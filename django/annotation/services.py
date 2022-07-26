@@ -46,11 +46,10 @@ def search_sirene(
     if siret is not None:
         establishment_qs = establishment_qs.filter(siret__contains=siret)
 
-    if name is not None:
+    if name:
         establishment_qs = establishment_qs.annotate(name_similarity=TrigramSimilarity("name", name)).order_by(
             "-name_similarity"
         )
-
     elif adresse is not None:
         establishment_qs = establishment_qs.annotate(
             adresse_similarity=TrigramSimilarity("address1", adresse)
