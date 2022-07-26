@@ -25,7 +25,7 @@
                         {% for key, value in row_instance.task_data.items %}
                             <tr>
                                 <td>{{ key }}</td>
-                                <td>{{ value|urlize }}</td>
+                                <td>{{ value|default_if_none:''|urlize }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -51,6 +51,15 @@
                             <input class="input" type="search" id="siret" name="siret" placeholder="..."
                                 hx-post="/search" hx-target="#search-results" hx-include="#search_data"
                                 hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label class="label" for="adresse">Adresse:</label>
+                            <input class="input" type="search" id="adresse" name="adresse" placeholder="..."
+                                hx-post="/search" hx-target="#search-results" hx-include="#search_data"
+                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search"
+                                value="{{ row_instance.data.adresse|default_if_none:'' }}" />
                         </div>
                     </div>
                     <div class="field">

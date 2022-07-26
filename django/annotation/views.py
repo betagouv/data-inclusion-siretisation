@@ -1,9 +1,8 @@
-from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
 from django.shortcuts import render
 
+from annotation import services
 from annotation.models import Annotation, DatasetRow
-from sirene.models import Establishment
 
 
 def progress(request):
@@ -33,61 +32,31 @@ def task(request):
         "dataset_str": "cd35_annuaire_social",
         "progress_str": f"{progress_current} / {progress_total}",
         "row_instance": row_instance,
+        "establishment_queryset": services.search_sirene(
+            adresse=row_instance.task_data["adresse"],
+            name=row_instance.task_data["nom"],
+            postal_code=row_instance.task_data["code_postal"],
+            siret=row_instance.task_data["siret"],
+        )[:10],
     }
-
-    postal_code_str = row_instance.task_data["code_postal"]
-    name_str = row_instance.task_data["nom"]
-
-    # prevent searches based on the name only, because trigram similarity can not be
-    # used on the whole sirene database
-    if not any([postal_code_str]):
-        context["establishment_queryset"] = Establishment.objects.none()
-        return render(request, "annotation/task.html", context)
-
-    establishment_qs = Establishment.objects
-
-    if postal_code_str:
-        establishment_qs = establishment_qs.filter(postal_code__startswith=postal_code_str)
-
-    if name_str:
-        establishment_qs = establishment_qs.annotate(
-            similarity=TrigramSimilarity("full_search_text", name_str)
-        ).order_by("-similarity")
-
-    establishment_qs = establishment_qs.all()[:10]
-
-    context["establishment_queryset"] = establishment_qs
 
     return render(request, "annotation/task.html", context)
 
 
 def search(request):
-    unsafe_siret = request.POST.get("siret", "")
-    unsafe_postal_code = request.POST.get("code_postal", "")
+    unsafe_address = request.POST.get("adresse", "")
     unsafe_name = request.POST.get("nom", "")
+    unsafe_postal_code = request.POST.get("code_postal", "")
+    unsafe_siret = request.POST.get("siret", "")
 
-    # prevent searches based on the name only, because trigram similarity can not be
-    # used on the whole sirene database
-    if not any([unsafe_siret, unsafe_postal_code]):
-        context = {"establishment_queryset": Establishment.objects.none()}
-        return render(request, "annotation/search.html", context)
-
-    establishment_qs = Establishment.objects
-
-    if unsafe_postal_code != "":
-        establishment_qs = establishment_qs.filter(postal_code__startswith=unsafe_postal_code)
-
-    if unsafe_siret != "":
-        establishment_qs = establishment_qs.filter(siret__contains=unsafe_siret)
-
-    if unsafe_name != "":
-        establishment_qs = establishment_qs.annotate(
-            similarity=TrigramSimilarity("full_search_text", unsafe_name)
-        ).order_by("-similarity")
-
-    establishment_qs = establishment_qs.all()[:10]
-
-    context = {"establishment_queryset": establishment_qs}
+    context = {
+        "establishment_queryset": services.search_sirene(
+            adresse=unsafe_address,
+            name=unsafe_name,
+            postal_code=unsafe_postal_code,
+            siret=unsafe_siret,
+        )[:10]
+    }
 
     return render(request, "annotation/search.html", context)
 

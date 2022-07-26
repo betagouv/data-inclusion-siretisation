@@ -39,6 +39,7 @@ class DatasetRow(BaseModel):
             "lien source": data["lien_source"],
             "typologie": data["typologie"],
             "description": data["presentation_detail"],
+            "siret": data["siret"],
         }
 
     def __str__(self) -> str:
