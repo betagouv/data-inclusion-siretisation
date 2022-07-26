@@ -1,15 +1,15 @@
 <section class="section">
     {% if completed %}
-    <div class="hero is-success">
-        <div class="hero-body">
-            <p class="title">
-                Félicitations !
-            </p>
-            <p class="subtitle">
-                Vous avez terminé :)
-            </p>
+        <div class="hero is-success">
+            <div class="hero-body">
+                <p class="title">
+                    Félicitations !
+                </p>
+                <p class="subtitle">
+                    Vous avez terminé :)
+                </p>
+            </div>
         </div>
-    </div>
     {% endif %}
     <div class="container">
         <table class="table is-fullwidth is-striped">
@@ -21,10 +21,10 @@
             </thead>
             <tbody>
                 {% for annotation_instance in annotations_queryset %}
-                <tr>
-                    <td>{{ annotation_instance.siret }}</td>
-                    <td>{{ annotation_instance.row.data.nom }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ annotation_instance.siret }}</td>
+                        <td>{{ annotation_instance.row.data.nom }}</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -1,7 +1,7 @@
 import csv
 import os.path
 import pathlib
-import subprocess
+import subprocess  # nosec
 import tempfile
 
 from django.conf import settings
@@ -30,7 +30,7 @@ class Command(BaseCommand):
         if USE_TEMP_DIR:
             the_dir = pathlib.Path(tmp_dir_name)
         else:
-            the_dir = pathlib.Path("/tmp")
+            the_dir = pathlib.Path("/tmp")  # nosec
         self.stdout.write("Saving SIRENE files to " + str(the_dir))
 
         legal_units_file_url = "https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip"
@@ -38,13 +38,13 @@ class Command(BaseCommand):
 
         if not os.path.exists(zipped_stock_file):
             self.stdout.write(self.style.NOTICE("Downloading legal units file"))
-            subprocess.run(
+            subprocess.run(  # nosec
                 ["curl", legal_units_file_url, "-o", zipped_stock_file],
                 check=True,
             )
 
             self.stdout.write(self.style.NOTICE("Unzipping legal units file"))
-            subprocess.run(
+            subprocess.run(  # nosec
                 ["unzip", zipped_stock_file, "-d", the_dir],
                 check=True,
             )
@@ -58,13 +58,13 @@ class Command(BaseCommand):
 
         if not os.path.exists(gzipped_estab_file):
             self.stdout.write(self.style.NOTICE("Downloading establishments file"))
-            subprocess.run(
+            subprocess.run(  # nosec
                 ["curl", establishments_geo_file_url, "-o", gzipped_estab_file],
                 check=True,
             )
 
             self.stdout.write(self.style.NOTICE("Unzipping establishments file"))
-            subprocess.run(
+            subprocess.run(  # nosec
                 ["gzip", "-dk", gzipped_estab_file],
                 check=True,
             )
@@ -84,12 +84,14 @@ class Command(BaseCommand):
 
     def get_address1(self, row):
         return clean_spaces(
-            f'{row["numeroVoieEtablissement"]} {row["indiceRepetitionEtablissement"]} {row["typeVoieEtablissement"]} {row["libelleVoieEtablissement"]}'
+            f'{row["numeroVoieEtablissement"]} {row["indiceRepetitionEtablissement"]} '
+            f'{row["typeVoieEtablissement"]} {row["libelleVoieEtablissement"]}'
         )
 
     def get_city_name(self, row):
         return clean_spaces(
-            f'{row["libelleCedexEtablissement"] or row["libelleCommuneEtablissement"]} {row["distributionSpecialeEtablissement"]}'
+            f'{row["libelleCedexEtablissement"] or row["libelleCommuneEtablissement"]} '
+            f'{row["distributionSpecialeEtablissement"]}'
         )
 
     def create_establishment(self, siren, parent_name, row):
@@ -127,9 +129,9 @@ class Command(BaseCommand):
                     if (i % 1_000_000) == 0:
                         self.stdout.write(self.style.NOTICE(f"{round(100*i/num_stock_items)}% done"))
 
-                    unit_name = (
-                        row["denominationUniteLegale"]
-                        or f'{row["nomUsageUniteLegale"] or row["nomUniteLegale"]} {row["prenomUsuelUniteLegale"] or row["prenom1UniteLegale"]}'
+                    unit_name = row["denominationUniteLegale"] or (
+                        f'{row["nomUsageUniteLegale"] or row["nomUniteLegale"]} '
+                        f'{row["prenomUsuelUniteLegale"] or row["prenom1UniteLegale"]}'
                     )
                     legal_units[row["siren"]] = clean_spaces(f'{unit_name} {row["sigleUniteLegale"]}')
 

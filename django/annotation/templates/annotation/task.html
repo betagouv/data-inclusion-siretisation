@@ -23,10 +23,10 @@
                     </thead>
                     <tbody>
                         {% for key, value in row_instance.task_data.items %}
-                        <tr>
-                            <td>{{ key }}</td>
-                            <td>{{ value|urlize }}</td>
-                        </tr>
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value|urlize }}</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -66,8 +66,8 @@
             </div>
             <div class="tile is-child box content">
                 <h1 class="title">Résultats <span id="spinner" class="htmx-indicator">
-                        <i class="fas fa-spinner fa-pulse"></i>
-                    </span></h1>
+                    <i class="fas fa-spinner fa-pulse"></i>
+                </span></h1>
 
                 <table class="table is-hoverable is-fullwidth is-striped is-narrow">
                     <thead>
@@ -83,17 +83,17 @@
                     <tbody id="search-results">
 
                         {% for establishment_instance in establishment_queryset %}
-                        <tr>
-                            <td>{{ establishment_instance.siret }}</td>
-                            <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
-                            <td>{{ establishment_instance.name }}</td>
-                            <td>{{ establishment_instance.address1 }}</td>
-                            <td>{{ establishment_instance.city }}</td>
-                            <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                            <tr>
+                                <td>{{ establishment_instance.siret }}</td>
+                                <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
+                                <td>{{ establishment_instance.name }}</td>
+                                <td>{{ establishment_instance.address1 }}</td>
+                                <td>{{ establishment_instance.city }}</td>
+                                <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
                                     hx-swap="outerHTML"
                                     hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>Choisir
                                     ✅</button></td>
-                        </tr>
+                            </tr>
                         {% endfor %}
                         <tr>
                             <td></td>

@@ -1,14 +1,14 @@
 {% for establishment_instance in establishment_queryset %}
-<tr>
-    <td>{{ establishment_instance.siret }}</td>
-    <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
-    <td>{{ establishment_instance.name }}</td>
-    <td>{{ establishment_instance.address1 }}</td>
-    <td>{{ establishment_instance.city }}</td>
-    <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+    <tr>
+        <td>{{ establishment_instance.siret }}</td>
+        <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
+        <td>{{ establishment_instance.name }}</td>
+        <td>{{ establishment_instance.address1 }}</td>
+        <td>{{ establishment_instance.city }}</td>
+        <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
             hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>Choisir
             ✅</button></td>
-</tr>
+    </tr>
 {% endfor %}
 <tr>
     <td></td>
