@@ -62,16 +62,21 @@ def search(request):
 
 
 def submit(request):
-    if request.POST.get("skipped", False):
-        Annotation.objects.create(
-            skipped=True,
-            row_id=request.POST["row_instance_id"],
-        )
-    else:
-        Annotation.objects.create(
-            siret=request.POST["siret"],
-            row_id=request.POST["row_instance_id"],
-        )
+    unsafe_row_instance_id = request.POST.get("row_instance_id", None)
+    unsafe_skipped = request.POST.get("skipped", None)
+    unsafe_closed = request.POST.get("closed", None)
+    unsafe_irrelevant = request.POST.get("irrelevant", None)
+    unsafe_is_parent = request.POST.get("is_parent", None)
+    unsafe_siret = request.POST.get("siret", None)
+
+    Annotation.objects.create(
+        row_id=unsafe_row_instance_id,
+        skipped=bool(unsafe_skipped),
+        closed=bool(unsafe_closed),
+        irrelevant=bool(unsafe_irrelevant),
+        is_parent=bool(unsafe_is_parent),
+        siret=unsafe_siret if unsafe_siret is not None else "",
+    )
 
     return task(request)
 

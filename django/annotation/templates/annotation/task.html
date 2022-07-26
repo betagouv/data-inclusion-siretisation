@@ -87,6 +87,7 @@
                             <th>Adresse</th>
                             <th>Ville</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="search-results">
@@ -100,23 +101,24 @@
                                 <td>{{ establishment_instance.city }}</td>
                                 <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
                                     hx-swap="outerHTML"
-                                    hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>Choisir
+                                    hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la structure
                                     ✅</button></td>
+                                <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                                    hx-swap="outerHTML"
+                                    hx-vals='{"siret": "{{ establishment_instance.siret }}", "is_parent": true}'>Structure mère
+                                    💯</button></td></td>
                             </tr>
                         {% endfor %}
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
-                                    hx-swap="outerHTML" hx-vals='{"skipped": true}'>Passer au suivant ❌</button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="tile is-child box">
+                <button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                    hx-swap="outerHTML" hx-vals='{"skipped": true}'>Passer au suivant ⏩</button>
+                <button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                    hx-swap="outerHTML" hx-vals='{"closed": true}'>Structure fermée ❌</button>
+                <button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
+                    hx-swap="outerHTML" hx-vals='{"irrelevant": true}'>Ne pas conserver 🙅</button>
             </div>
         </div>
     </div>

@@ -6,18 +6,11 @@
         <td>{{ establishment_instance.address1 }}</td>
         <td>{{ establishment_instance.city }}</td>
         <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task"
-            hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>Choisir
+            hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la structure
             ✅</button></td>
+        <td><button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task" hx-swap="outerHTML"
+            hx-vals='{"siret": "{{ establishment_instance.siret }}", "is_parent": true}'>Structure mère
+            💯</button></td>
+    </td>
     </tr>
 {% endfor %}
-<tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td>
-        <button class="button" hx-post="/submit" hx-include="#task-metadata" hx-target="#task" hx-swap="outerHTML"
-            hx-vals='{"skipped": true}'>Passer au suivant ❌</button>
-    </td>
-</tr>

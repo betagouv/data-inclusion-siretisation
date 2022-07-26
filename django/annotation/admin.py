@@ -15,4 +15,6 @@ class DatasetRowAdmin(admin.ModelAdmin):
 
 @admin.register(models.Annotation)
 class AnnotationAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "row", "siret", "created_at", "is_parent", "closed", "skipped"]
+    list_filter = ["is_parent", "closed", "skipped"]
+    search_fields = ["siret", "row__data__nom"]

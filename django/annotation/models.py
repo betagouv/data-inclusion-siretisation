@@ -58,6 +58,9 @@ class Annotation(BaseModel):
         default="",
     )
     skipped = models.BooleanField(default=False)
+    closed = models.BooleanField(default=False)
+    irrelevant = models.BooleanField(default=False)
+    is_parent = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"{self.siret} <-> {self.row.data['nom']}"
