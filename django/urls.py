@@ -5,10 +5,11 @@ import annotation.views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
     path("", include("meta.urls")),
     path("", annotation.views.index),
-    path("progress", annotation.views.progress),
-    path("search", annotation.views.search),
-    path("task", annotation.views.task),
-    path("submit", annotation.views.submit),
+    path("partials/progress", annotation.views.partial_progress),
+    path("partials/search", annotation.views.partial_search),
+    path("partials/task", annotation.views.partial_task),
+    path("partials/submit", annotation.views.partial_submit),
 ]

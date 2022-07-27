@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from django.db import models
 
 from common.models import BaseModel
+from users.models import User
 
 
 class Dataset(BaseModel):
@@ -61,6 +62,13 @@ class Annotation(BaseModel):
     closed = models.BooleanField(default=False)
     irrelevant = models.BooleanField(default=False)
     is_parent = models.BooleanField(default=False)
+
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self) -> str:
         return f"{self.siret} <-> {self.row.data['nom']}"

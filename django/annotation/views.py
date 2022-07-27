@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import render
 
@@ -5,7 +6,13 @@ from annotation import services
 from annotation.models import Annotation, DatasetRow
 
 
-def progress(request):
+@login_required()
+def index(request):
+    return render(request, "annotation/index.html")
+
+
+@login_required()
+def partial_progress(request):
     progress_current = DatasetRow.objects.annotate(Count("annotations")).filter(annotations__count__gt=0).count()
     progress_total = DatasetRow.objects.count()
 
@@ -20,13 +27,14 @@ def progress(request):
     return render(request, "annotation/progress.html", context)
 
 
-def task(request):
+@login_required()
+def partial_task(request):
     row_instance = DatasetRow.objects.annotate(Count("annotations")).exclude(annotations__count__gt=0).first()
     progress_current = DatasetRow.objects.annotate(Count("annotations")).filter(annotations__count__gt=0).count()
     progress_total = DatasetRow.objects.count()
 
     if row_instance is None:
-        return progress(request)
+        return partial_progress(request)
 
     context = {
         "dataset_str": "cd35_annuaire_social",
@@ -43,7 +51,8 @@ def task(request):
     return render(request, "annotation/task.html", context)
 
 
-def search(request):
+@login_required()
+def partial_search(request):
     unsafe_address = request.POST.get("adresse", None)
     unsafe_name = request.POST.get("nom", None)
     unsafe_postal_code = request.POST.get("code_postal", None)
@@ -61,7 +70,8 @@ def search(request):
     return render(request, "annotation/search.html", context)
 
 
-def submit(request):
+@login_required()
+def partial_submit(request):
     unsafe_row_instance_id = request.POST.get("row_instance_id", None)
     unsafe_skipped = request.POST.get("skipped", None)
     unsafe_closed = request.POST.get("closed", None)
@@ -76,10 +86,7 @@ def submit(request):
         irrelevant=bool(unsafe_irrelevant),
         is_parent=bool(unsafe_is_parent),
         siret=unsafe_siret if unsafe_siret is not None else "",
+        created_by=request.user,
     )
 
-    return task(request)
-
-
-def index(request):
-    return render(request, "annotation/index.html")
+    return partial_task(request)
