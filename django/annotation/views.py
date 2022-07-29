@@ -25,25 +25,6 @@ def index(request: http.HttpRequest):
 
 
 @login_required()
-def partial_progress(request: http.HttpRequest):
-    if not request.htmx:
-        return http.HttpResponseNotFound()
-
-    progress_current = DatasetRow.objects.annotate(Count("annotations")).filter(annotations__count__gt=0).count()
-    progress_total = DatasetRow.objects.count()
-
-    context = {
-        "dataset_str": "cd35_annuaire_social",
-        "progress_str": f"{progress_current} / {progress_total}",
-        "completed": DatasetRow.objects.annotate(Count("annotations")).filter(annotations__count__gt=0).count()
-        == DatasetRow.objects.count(),
-        "annotations_queryset": Annotation.objects.all(),
-    }
-
-    return render(request, "annotation/progress.html", context)
-
-
-@login_required()
 def partial_task(request: http.HttpRequest):
     if not request.htmx:
         return http.HttpResponseNotFound()
@@ -65,7 +46,7 @@ def partial_task(request: http.HttpRequest):
     progress_total = DatasetRow.objects.count()
 
     if row_instance is None:
-        return partial_progress(request)
+        return http.HttpResponse("Vous avez terminé ! :)")
 
     context = {
         "dataset_str": "cd35_annuaire_social",
