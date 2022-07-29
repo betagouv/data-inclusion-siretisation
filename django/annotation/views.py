@@ -31,6 +31,11 @@ def partial_task(request: http.HttpRequest):
 
     unsafe_dataset_instance_id = request.GET.get("dataset_instance_id", None)
 
+    try:
+        dataset_instance = Dataset.objects.get(id=unsafe_dataset_instance_id)
+    except Dataset.DoesNotExist:
+        return http.HttpResponseNotFound()
+
     row_instance = (
         DatasetRow.objects.annotate(Count("annotations"))
         .filter(dataset_id=unsafe_dataset_instance_id)
@@ -49,7 +54,7 @@ def partial_task(request: http.HttpRequest):
         return http.HttpResponse("Vous avez terminé ! :)")
 
     context = {
-        "dataset_str": "cd35_annuaire_social",
+        "dataset_str": dataset_instance.label,
         "progress_str": f"{progress_current} / {progress_total}",
         "row_instance": row_instance,
         "establishment_queryset": services.search_sirene(
