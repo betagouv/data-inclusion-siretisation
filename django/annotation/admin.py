@@ -19,6 +19,7 @@ class AnnotationAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "siret", "created_at", "is_parent", "closed", "skipped", "created_by"]
     list_filter = ["is_parent", "closed", "skipped", "created_by"]
     search_fields = ["siret", "row__data__nom"]
+    ordering = ["-created_at"]
 
     def name(self, obj):
         return text.Truncator(obj.row.data["nom"]).chars(80)
