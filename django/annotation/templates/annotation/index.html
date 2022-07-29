@@ -2,7 +2,11 @@
 
 {% block body_content %}
     <div hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-        <section class="section" hx-swap="outerHTML" hx-get="/partials/task" hx-trigger="load">
+        <div id="dataset-metadata">
+            <input name="dataset_instance_id" type="hidden" value="{{ dataset_instance.id }}" />
+        </div>
+        <section class="section" hx-swap="outerHTML" hx-get="/partials/task" hx-trigger="load"
+            hx-include="#dataset-metadata">
         </section>
     </div>
 {% endblock %}

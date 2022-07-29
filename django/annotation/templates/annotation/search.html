@@ -5,13 +5,12 @@
         <td>{{ establishment_instance.name }}</td>
         <td>{{ establishment_instance.address1 }}</td>
         <td>{{ establishment_instance.city }}</td>
-        <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata" hx-target="#task"
-            hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la structure
+        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+            hx-swap="outerHTML" hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la structure
             ✅</button></td>
-        <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata" hx-target="#task"
+        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
             hx-swap="outerHTML" hx-vals='{"siret": "{{ establishment_instance.siret }}", "is_parent": true}'>Structure
-            mère
-            💯</button></td>
+            mère 💯</button></td>
     </td>
     </tr>
 {% endfor %}

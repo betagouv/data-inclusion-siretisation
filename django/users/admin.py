@@ -21,10 +21,23 @@ class UserAdmin(BaseUserAdmin):
     ]
     fieldsets = [
         (None, {"fields": ("email", "password")}),
-        ("Permissions", {"fields": ("is_staff", "is_active")}),
+        ("Permissions", {"fields": ("is_staff", "is_active", "groups")}),
     ]
     add_fieldsets = [
-        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "is_staff", "is_active")}),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "email",
+                    "password1",
+                    "password2",
+                    "is_staff",
+                    "is_active",
+                    "groups",
+                ),
+            },
+        ),
     ]
     search_fields = [
         "email",

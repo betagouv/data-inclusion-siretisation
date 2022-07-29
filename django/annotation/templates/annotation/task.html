@@ -12,7 +12,51 @@
                 <p class="heading">Avancement</p>
                 <p class="title">{{ progress_str }}</p>
             </div>
-            <div class="tile is-child box">
+        </div>
+        <div class="tile is-child box">
+            <h1 class="title is-5">Formulaire de recherche</h1>
+            <form id="search_data">
+                <div class="field">
+                    <div class="control">
+                        <label class="label" for="nom">Nom:</label>
+                        <input class="input" type="search" id="nom" name="nom" placeholder="..."
+                            hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
+                            hx-indicator="#search-indicator" hx-trigger="keyup changed delay:500ms, search"
+                            value="{{ row_instance.data.nom|default_if_none:'' }}" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="label" for="siret">SIRET:</label>
+                        <input class="input" type="search" id="siret" name="siret" placeholder="..."
+                            hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
+                            hx-indicator="#search-indicator" hx-trigger="keyup changed delay:500ms, search" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="label" for="adresse">Adresse:</label>
+                        <input class="input" type="search" id="adresse" name="adresse" placeholder="..."
+                            hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
+                            hx-indicator="#search-indicator" hx-trigger="keyup changed delay:500ms, search"
+                            value="{{ row_instance.data.adresse|default_if_none:'' }}" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="label" for="code_postal">Code postal:</label>
+                        <input class="input" type="search" id="code_postal" name="code_postal" placeholder="..."
+                            hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
+                            hx-indicator="#search-indicator" hx-trigger="keyup changed delay:500ms, search"
+                            value="{{ row_instance.data.code_postal|default_if_none:'' }}" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+            <div class="tile is-child box is-4">
                 <h1 class="title is-5">Données de départ</h1>
                 <table class="table is-fullwidth">
                     <thead>
@@ -25,56 +69,14 @@
                         {% for key, value in row_instance.task_data.items %}
                             <tr>
                                 <td>{{ key }}</td>
-                                <td>{{ value|default_if_none:''|urlize }}</td>
+                                <td>{{ value|default_if_none:''|urlize|truncatechars:600 }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="tile is-parent is-vertical">
             <div class="tile is-child box">
-                <h1 class="title is-5">Formulaire de recherche</h1>
-                <form id="search_data">
-                    <div class="field">
-                        <div class="control">
-                            <label class="label" for="nom">Nom:</label>
-                            <input class="input" type="search" id="nom" name="nom" placeholder="..."
-                                hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
-                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search"
-                                value="{{ row_instance.data.nom|default_if_none:'' }}" />
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <label class="label" for="siret">SIRET:</label>
-                            <input class="input" type="search" id="siret" name="siret" placeholder="..."
-                                hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
-                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search" />
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <label class="label" for="adresse">Adresse:</label>
-                            <input class="input" type="search" id="adresse" name="adresse" placeholder="..."
-                                hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
-                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search"
-                                value="{{ row_instance.data.adresse|default_if_none:'' }}" />
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <label class="label" for="code_postal">Code postal:</label>
-                            <input class="input" type="search" id="code_postal" name="code_postal" placeholder="..."
-                                hx-post="/partials/search" hx-target="#search-results" hx-include="#search_data"
-                                hx-indicator="#spinner" hx-trigger="keyup changed delay:500ms, search"
-                                value="{{ row_instance.data.code_postal|default_if_none:'' }}" />
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tile is-child box content">
-                <h1 class="title is-5">Résultats <span id="spinner" class="htmx-indicator">
+                <h1 class="title is-5">Résultats <span id="search-indicator" class="htmx-indicator">
                     <i class="fas fa-spinner fa-pulse"></i>
                 </span></h1>
 
@@ -99,26 +101,25 @@
                                 <td>{{ establishment_instance.name }}</td>
                                 <td>{{ establishment_instance.address1 }}</td>
                                 <td>{{ establishment_instance.city }}</td>
-                                <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
-                                    hx-target="#task" hx-swap="outerHTML"
+                                <td><button class="button" hx-post="/partials/submit"
+                                    hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
                                     hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la structure
                                     ✅</button></td>
-                                <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
-                                    hx-target="#task" hx-swap="outerHTML"
+                                <td><button class="button" hx-post="/partials/submit"
+                                    hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
                                     hx-vals='{"siret": "{{ establishment_instance.siret }}", "is_parent": true}'>Structure
-                                    mère
-                                    💯</button></td>
+                                    mère 💯</button></td>
                             </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 <div class="buttons">
-                    <button class="button" hx-post="/partials/submit" hx-include="#task-metadata" hx-target="#task"
+                    <button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
                         hx-swap="outerHTML" hx-vals='{"skipped": true}'>Passer au suivant ⏩</button>
-                    <button class="button" hx-post="/partials/submit" hx-include="#task-metadata" hx-target="#task"
+                    <button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
                         hx-swap="outerHTML" hx-vals='{"closed": true}'>Structure fermée ❌</button>
-                    <button class="button" hx-post="/partials/submit" hx-include="#task-metadata" hx-target="#task"
+                    <button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
                         hx-swap="outerHTML" hx-vals='{"irrelevant": true}'>Ne pas conserver 🙅</button>
                 </div>
             </div>

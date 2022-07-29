@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from django.contrib.auth.models import Group
 from django.db import models
+from django.utils import text
 
 from common.models import BaseModel
 from users.models import User
@@ -9,6 +10,7 @@ from users.models import User
 
 class Dataset(BaseModel):
     label = models.CharField(max_length=100)
+    slug = models.SlugField(blank=True, default="")
     organization = models.ForeignKey(
         Group,
         on_delete=models.PROTECT,
@@ -17,6 +19,10 @@ class Dataset(BaseModel):
 
     def __str__(self) -> str:
         return self.label
+
+    def save(self, *args, **kwargs):
+        self.slug = text.slugify(f"{self.organization.name} {self.label}")
+        super().save(*args, **kwargs)
 
 
 class DatasetRow(BaseModel):
@@ -32,6 +38,7 @@ class DatasetRow(BaseModel):
         data = defaultdict(None, self.data)
 
         return {
+            "siret": data["siret"],
             "nom": data["nom"],
             "adresse": data["adresse"],
             "code_postal": data["code_postal"],
@@ -40,7 +47,6 @@ class DatasetRow(BaseModel):
             "lien source": data["lien_source"],
             "typologie": data["typologie"],
             "description": data["presentation_detail"],
-            "siret": data["siret"],
         }
 
     def __str__(self) -> str:
