@@ -48,7 +48,7 @@ def partial_task(request: http.HttpRequest):
         .filter(annotations__count__gt=0)
         .count()
     )
-    progress_total = DatasetRow.objects.count()
+    progress_total = DatasetRow.objects.filter(dataset_id=unsafe_dataset_instance_id).count()
 
     if row_instance is None:
         return http.HttpResponse("Vous avez terminé ! :)")
