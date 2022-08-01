@@ -16,7 +16,7 @@ def index(request: http.HttpRequest):
     except Dataset.DoesNotExist:
         return http.HttpResponseNotFound()
 
-    if request.user.groups.filter(id=dataset_instance.organization.id).exists():
+    if not request.user.groups.filter(id=dataset_instance.organization.id).exists():
         return http.HttpResponseForbidden()
 
     context = {"dataset_instance": dataset_instance}
