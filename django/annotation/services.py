@@ -1,6 +1,6 @@
 from typing import Optional
 
-from django.contrib.postgres.search import TrigramSimilarity
+from django.contrib.postgres import search
 from django.db import models, transaction
 
 from annotation.models import Dataset, DatasetRow
@@ -47,12 +47,16 @@ def search_sirene(
         establishment_qs = establishment_qs.filter(siret__contains=siret)
 
     if name:
-        establishment_qs = establishment_qs.annotate(name_similarity=TrigramSimilarity("name", name)).order_by(
-            "-name_similarity"
-        )
+        establishment_qs = establishment_qs.annotate(
+            name_similarity=search.TrigramWordSimilarity(name, "name")
+        ).order_by("-name_similarity")
+
+        if adresse is not None:
+            establishment_qs = establishment_qs.filter(address1__iregex=adresse)
+
     elif adresse is not None:
         establishment_qs = establishment_qs.annotate(
-            adresse_similarity=TrigramSimilarity("address1", adresse)
+            adresse_similarity=search.TrigramWordSimilarity(adresse, "address1")
         ).order_by("-adresse_similarity")
 
     return establishment_qs.all()
